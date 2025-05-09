@@ -31,7 +31,7 @@ end
 function love.keypressed(key)
     if key == "escape" then
         -- Return to the main menu
-        switchScene(menu)
+        SwitchScene(menu)
     elseif currentScene.keypressed then
         -- Pass the keypress to the current scene
         currentScene.keypressed(key)
@@ -39,7 +39,7 @@ function love.keypressed(key)
 end
 
 -- Function to switch scenes
-function switchScene(scene)
+function SwitchScene(scene)
     if currentScene.unload then
         currentScene.unload() -- Unload the current scene if it has an unload function
     end

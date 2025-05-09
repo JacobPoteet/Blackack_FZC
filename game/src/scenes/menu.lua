@@ -49,11 +49,11 @@ end
 
 function menu.selectOption(index)
     if index == 1 then
-        switchScene(require(constants.SCENES.PLAY))
+        SwitchScene(require(constants.SCENES.PLAY))
     elseif index == 2 then
-        switchScene(require(constants.SCENES.SETTINGS))
+        SwitchScene(require(constants.SCENES.SETTINGS))
     elseif index == 3 then
-        switchScene(require(constants.SCENES.EXIT))
+        SwitchScene(require(constants.SCENES.EXIT))
     end
 end
 
