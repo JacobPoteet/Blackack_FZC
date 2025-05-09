@@ -14,6 +14,16 @@ function menu.load()
     menu.font = love.graphics.newFont(50) -- Increase font size
     love.graphics.setFont(menu.font)
 
+    -- Define specific colors for chips
+    local predefinedColors = {
+        {1, 0, 0}, -- Red
+        {0, 1, 0}, -- Green
+        {0, 0, 1}, -- Blue
+        {1, 1, 0}, -- Yellow
+        {1, 0, 1}, -- Magenta
+        {0, 1, 1}  -- Cyan
+    }
+
     -- Load the chip image and spawn multiple chips
     local chipImage = love.graphics.newImage("assets/chip.png") -- Adjust the path as needed
     for i = 1, numChips do
@@ -25,11 +35,7 @@ function menu.load()
             height = chipImage:getHeight() * 0.2, -- Scale the height
             dx = math.random(-100, 100), -- Random horizontal velocity
             dy = math.random(-100, 100), -- Random vertical velocity
-            color = { -- Random color (RGB)
-                math.random(), -- Red (0 to 1)
-                math.random(), -- Green (0 to 1)
-                math.random()  -- Blue (0 to 1)
-            }
+            color = predefinedColors[(i - 1) % #predefinedColors + 1] -- Assign colors in a round-robin manner
         }
         table.insert(chips, chip)
     end
