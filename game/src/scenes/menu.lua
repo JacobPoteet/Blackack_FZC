@@ -8,6 +8,8 @@ local keyPressed = false -- Debounce flag
 local chips = {} -- Table to hold all chips
 local numChips = 30 -- Number of chips to spawn
 
+local dollarSigns = {} -- Table to hold dollar signs
+
 local lastMouseX, lastMouseY = 0, 0 -- To track the previous mouse position
 
 function menu.load()
@@ -86,17 +88,21 @@ function menu.update(dt)
         if chip.x < 0 then
             chip.x = 0
             chip.dx = -chip.dx
+            table.insert(dollarSigns, { x = chip.x, y = chip.y, opacity = 1, lifetime = 0.5 }) -- Add dollar sign
         elseif chip.x + chip.width > screenWidth then
             chip.x = screenWidth - chip.width
             chip.dx = -chip.dx
+            table.insert(dollarSigns, { x = chip.x + chip.width, y = chip.y, opacity = 1, lifetime = 0.5 }) -- Add dollar sign
         end
 
         if chip.y < 0 then
             chip.y = 0
             chip.dy = -chip.dy
+            table.insert(dollarSigns, { x = chip.x, y = chip.y, opacity = 1, lifetime = 0.5 }) -- Add dollar sign
         elseif chip.y + chip.height > screenHeight then
             chip.y = screenHeight - chip.height
             chip.dy = -chip.dy
+            table.insert(dollarSigns, { x = chip.x, y = chip.y + chip.height, opacity = 1, lifetime = 0.5 }) -- Add dollar sign
         end
     end
 
@@ -133,6 +139,11 @@ function menu.update(dt)
                 chipA.dx, chipB.dx = chipB.dx, chipA.dx
                 chipA.dy, chipB.dy = chipB.dy, chipA.dy
 
+                -- Add a dollar sign at the collision point
+                local collisionX = (chipA.x + chipA.width / 2 + chipB.x + chipB.width / 2) / 2
+                local collisionY = (chipA.y + chipA.height / 2 + chipB.y + chipB.height / 2) / 2
+                table.insert(dollarSigns, { x = collisionX, y = collisionY, opacity = 1, lifetime = 0.5 })
+
                 -- Separate the chips to prevent overlap
                 local overlapX = math.min(chipA.x + chipA.width - chipB.x, chipB.x + chipB.width - chipA.x)
                 local overlapY = math.min(chipA.y + chipA.height - chipB.y, chipB.y + chipB.height - chipA.y)
@@ -158,6 +169,16 @@ function menu.update(dt)
         end
     end
 
+    -- Update the dollar signs
+    for i = #dollarSigns, 1, -1 do
+        local dollar = dollarSigns[i]
+        dollar.lifetime = dollar.lifetime - dt
+        dollar.opacity = dollar.lifetime / 0.5 -- Fade out over 0.5 seconds
+        if dollar.lifetime <= 0 then
+            table.remove(dollarSigns, i) -- Remove expired dollar signs
+        end
+    end
+
     -- Update the last mouse position
     lastMouseX, lastMouseY = mouseX, mouseY
 end
@@ -180,6 +201,12 @@ function menu.draw()
         -- Draw the white symbols on top of the chip
         love.graphics.setColor(1, 1, 1, 1) -- Reset to white for the symbols
         love.graphics.draw(chip.symbols, chip.x, chip.y, 0, 0.2, 0.2) -- Scale the symbols to match the chip
+    end
+
+    -- Draw dollar signs
+    for _, dollar in ipairs(dollarSigns) do
+        love.graphics.setColor(0, 1, 0, dollar.opacity) -- Green color with fading opacity
+        love.graphics.print("$", dollar.x, dollar.y) -- Draw the dollar sign
     end
 
     -- Draw menu options on top of everything else
