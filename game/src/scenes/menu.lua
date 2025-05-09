@@ -24,47 +24,22 @@ function menu.load()
         {0.035, 0.047, 0.063}  -- Black
     }
 
-    -- Load the chip images
+    -- Load the chip image and symbols image
     local chipImage = love.graphics.newImage("assets/chip.png") -- Base chip image
-    local chipAlphaImage = love.graphics.newImage("assets/chipalpha.png") -- Alpha mask image
     local symbolsImage = love.graphics.newImage("assets/whitesymbols.png") -- White symbols image
 
     -- Spawn multiple chips
     for i = 1, numChips do
-        -- Create a canvas to combine chip.png, chipalpha.png, and symbols.png
-        local chipCanvas = love.graphics.newCanvas(chipImage:getWidth(), chipImage:getHeight())
-        love.graphics.setCanvas(chipCanvas)
-        love.graphics.clear()
-
-        -- Apply the random color
-        local color = predefinedColors[(i - 1) % #predefinedColors + 1]
-        love.graphics.setColor(color[1], color[2], color[3], 1) -- Apply the chip's color
-        love.graphics.draw(chipAlphaImage, 0, 0) -- Draw the alpha mask with the color
-
-        -- Draw the base chip image on top
-        love.graphics.setColor(1, 1, 1, 1) -- Reset to white
-        love.graphics.setBlendMode("alpha") -- Use multiply blend mode for masking
-        love.graphics.draw(chipImage, 0, 0)
-
-        -- Draw the white symbols on top
-        love.graphics.setBlendMode("alpha") -- Reset to alpha blend mode
-        love.graphics.draw(symbolsImage, 0, 0)
-
-        -- Reset the canvas
-        love.graphics.setCanvas()
-
-        -- Store the combined chip image
-        local combinedChipImage = love.graphics.newImage(chipCanvas:newImageData())
-
-        -- Create the chip object
         local chip = {
-            image = combinedChipImage, -- Use the combined chip image
+            image = chipImage, -- Use the base chip image
+            symbols = symbolsImage, -- White symbols image
             x = math.random(100, 700), -- Random initial x position
             y = math.random(100, 500), -- Random initial y position
-            width = combinedChipImage:getWidth() * 0.2, -- Scale the width
-            height = combinedChipImage:getHeight() * 0.2, -- Scale the height
+            width = chipImage:getWidth() * 0.2, -- Scale the width
+            height = chipImage:getHeight() * 0.2, -- Scale the height
             dx = math.random(-100, 100), -- Random horizontal velocity
-            dy = math.random(-100, 100) -- Random vertical velocity
+            dy = math.random(-100, 100), -- Random vertical velocity
+            color = predefinedColors[(i - 1) % #predefinedColors + 1] -- Assign colors in a round-robin manner
         }
         table.insert(chips, chip)
     end
@@ -186,8 +161,13 @@ function menu.draw()
 
     -- Draw all chips
     for _, chip in ipairs(chips) do
-        love.graphics.setColor(1, 1, 1, 1) -- Reset to white
+        -- Draw the base chip with its color
+        love.graphics.setColor(chip.color[1], chip.color[2], chip.color[3], 1) -- Apply the chip's color
         love.graphics.draw(chip.image, chip.x, chip.y, 0, 0.2, 0.2) -- Scale the chip to 20% of its original size
+
+        -- Draw the white symbols on top of the chip
+        love.graphics.setColor(1, 1, 1, 1) -- Reset to white for the symbols
+        love.graphics.draw(chip.symbols, chip.x, chip.y, 0, 0.2, 0.2) -- Scale the symbols to match the chip
     end
 
     -- Draw menu options on top of everything else
