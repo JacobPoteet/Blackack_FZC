@@ -3,6 +3,7 @@ local menu = {}
 
 local options = { "Play", "Settings", "Exit" }
 local selectedIndex = 1
+local keyPressed = false -- Debounce flag
 
 function menu.load()
     menu.font = love.graphics.newFont(24)
@@ -10,12 +11,22 @@ function menu.load()
 end
 
 function menu.update(dt)
-    if love.keyboard.isDown("up") then
-        selectedIndex = selectedIndex > 1 and selectedIndex - 1 or #options
-    elseif love.keyboard.isDown("down") then
-        selectedIndex = selectedIndex < #options and selectedIndex + 1 or 1
-    elseif love.keyboard.isDown("return") then
-        menu.selectOption(selectedIndex)
+    if not keyPressed then
+        if love.keyboard.isDown("up") then
+            selectedIndex = selectedIndex > 1 and selectedIndex - 1 or #options
+            keyPressed = true
+        elseif love.keyboard.isDown("down") then
+            selectedIndex = selectedIndex < #options and selectedIndex + 1 or 1
+            keyPressed = true
+        elseif love.keyboard.isDown("return") then
+            menu.selectOption(selectedIndex)
+            keyPressed = true
+        end
+    end
+
+    -- Reset the debounce flag when no keys are pressed
+    if not love.keyboard.isDown("up") and not love.keyboard.isDown("down") and not love.keyboard.isDown("return") then
+        keyPressed = false
     end
 end
 
