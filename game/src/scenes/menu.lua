@@ -11,6 +11,26 @@ function menu.load()
 end
 
 function menu.update(dt)
+    -- Detect mouse hover
+    local mouseX, mouseY = love.mouse.getPosition()
+    local screenWidth, screenHeight = love.graphics.getDimensions()
+    local totalHeight = #options * menu.font:getHeight() + (#options - 1) * 20
+    local startY = (screenHeight - totalHeight) / 2
+
+    for i, option in ipairs(options) do
+        local textWidth = menu.font:getWidth(option)
+        local textHeight = menu.font:getHeight()
+        local textX = (screenWidth - textWidth) / 2
+        local textY = startY + (i - 1) * (textHeight + 20)
+
+        local padding = 10
+        if mouseX >= textX - padding and mouseX <= textX + textWidth + padding and
+           mouseY >= textY - padding and mouseY <= textY + textHeight + padding then
+            selectedIndex = i -- Update the selected index based on hover
+        end
+    end
+
+    -- Handle keyboard input
     if not keyPressed then
         if love.keyboard.isDown("up") then
             selectedIndex = selectedIndex > 1 and selectedIndex - 1 or #options
@@ -31,23 +51,37 @@ function menu.update(dt)
 end
 
 function menu.draw()
+    local screenWidth, screenHeight = love.graphics.getDimensions()
+    local totalHeight = #options * menu.font:getHeight() + (#options - 1) * 20 -- Total height of all options with spacing
+    local startY = (screenHeight - totalHeight) / 2 -- Start drawing from the center
+
     for i, option in ipairs(options) do
+        local textWidth = menu.font:getWidth(option)
+        local textHeight = menu.font:getHeight()
+        local x = (screenWidth - textWidth) / 2 -- Center horizontally
+        local y = startY + (i - 1) * (textHeight + 20) -- Add spacing between options
+
         if i == selectedIndex then
-            love.graphics.setColor(1, 1, 0)
+            love.graphics.setColor(1, 1, 0) -- Highlight the selected option
         else
-            love.graphics.setColor(1, 1, 1)
+            love.graphics.setColor(1, 1, 1) -- Default color
         end
-        love.graphics.printf(option, 0, 100 + (i - 1) * 50, love.graphics.getWidth(), "center")
+
+        love.graphics.print(option, x, y)
     end
 end
 
 function menu.mousepressed(x, y, button)
     if button == 1 then
+        local screenWidth, screenHeight = love.graphics.getDimensions()
+        local totalHeight = #options * menu.font:getHeight() + (#options - 1) * 20
+        local startY = (screenHeight - totalHeight) / 2
+
         for i, option in ipairs(options) do
             local textWidth = menu.font:getWidth(option)
             local textHeight = menu.font:getHeight()
-            local textX = (love.graphics.getWidth() - textWidth) / 2
-            local textY = 100 + (i - 1) * 50
+            local textX = (screenWidth - textWidth) / 2
+            local textY = startY + (i - 1) * (textHeight + 20)
 
             local padding = 10
             if x >= textX - padding and x <= textX + textWidth + padding and
@@ -55,6 +89,12 @@ function menu.mousepressed(x, y, button)
                 menu.selectOption(i)
             end
         end
+    end
+end
+
+function menu.keypressed(key)
+    if key == "escape" then
+        love.event.quit() -- Close the game
     end
 end
 

@@ -29,11 +29,7 @@ function love.mousepressed(x, y, button)
 end
 
 function love.keypressed(key)
-    if key == "escape" then
-        -- Return to the main menu
-        SwitchScene(menu)
-    elseif currentScene.keypressed then
-        -- Pass the keypress to the current scene
+    if currentScene.keypressed then
         currentScene.keypressed(key)
     end
 end
