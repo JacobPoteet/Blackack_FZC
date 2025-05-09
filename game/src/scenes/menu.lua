@@ -157,17 +157,19 @@ end
 
 function menu.draw()
     -- Set the background color
-    love.graphics.clear(0.149, 0.302, 0.145) -- Example: Dark green background (RGB values between 0 and 1)
+    love.graphics.clear(0.149, 0.302, 0.145) -- Example: Dark green background
 
     -- Draw all chips
     for _, chip in ipairs(chips) do
         -- Draw the base chip image (white base)
         love.graphics.setColor(1, 1, 1) -- White color
-        love.graphics.draw(chip.baseImage, chip.x, chip.y, 0, 0.2, 0.2) -- Scale the chip to 20% of its original size
+        love.graphics.draw(chip.baseImage, chip.x, chip.y, 0, 0.2, 0.2)
 
         -- Draw the alpha mask with the chip's color
-        love.graphics.setColor(chip.color[1], chip.color[2], chip.color[3], 1) -- Apply the chip's color
-        love.graphics.draw(chip.alphaImage, chip.x, chip.y, 0, 0.2, 0.2) -- Scale the alpha mask to match the chip
+        love.graphics.setBlendMode("add") -- Use additive blending for brightness
+        love.graphics.setColor(chip.color[1], chip.color[2], chip.color[3], 1)
+        love.graphics.draw(chip.alphaImage, chip.x, chip.y, 0, 0.2, 0.2)
+        love.graphics.setBlendMode("alpha") -- Reset to default blend mode
     end
 
     -- Draw menu options on top of everything else
@@ -223,7 +225,7 @@ function menu.selectOption(index)
         SwitchScene(require(constants.SCENES.PLAY))
     elseif index == 2 then
         SwitchScene(require(constants.SCENES.SETTINGS))
-    elseif index == 3 then
+    elseif index == 2 then
         SwitchScene(require(constants.SCENES.EXIT))
     end
 end
