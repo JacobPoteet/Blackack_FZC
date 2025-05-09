@@ -166,10 +166,9 @@ function menu.draw()
         love.graphics.draw(chip.baseImage, chip.x, chip.y, 0, 0.2, 0.2)
 
         -- Draw the alpha mask with the chip's color
-        love.graphics.setBlendMode("add") -- Use additive blending for brightness
-        love.graphics.setColor(chip.color[1], chip.color[2], chip.color[3], 1)
+        love.graphics.setBlendMode("alpha") -- Use default alpha blending
+        love.graphics.setColor(chip.color[1], chip.color[2], chip.color[3], 1) -- Apply the chip's color
         love.graphics.draw(chip.alphaImage, chip.x, chip.y, 0, 0.2, 0.2)
-        love.graphics.setBlendMode("alpha") -- Reset to default blend mode
     end
 
     -- Draw menu options on top of everything else
