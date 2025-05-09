@@ -1,6 +1,6 @@
 local play = {}
 
-function play.start()
+function play.load()
     print("Starting the game...")
     -- Add game logic here
     print("Game in progress...")
