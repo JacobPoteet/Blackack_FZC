@@ -17,6 +17,11 @@ function menu.load()
     -- Load the background image
     menu.background = love.graphics.newImage("assets/greenfabric.png") -- Replace with the correct path to greenfabric.png
 
+    -- Load the background music
+    menu.music = love.audio.newSource("assets/BLgamemenumusic.wav", "stream") -- Replace with the correct path to BLgamemenumusic
+    menu.music:setLooping(true) -- Loop the music
+    menu.music:play() -- Start playing the music
+
     -- Define specific colors for chips
     local predefinedColors = {
         {0.608, 0.224, 0.231}, -- Red
@@ -222,6 +227,7 @@ end
 
 function menu.keypressed(key)
     if key == "escape" then
+        menu.music:stop() -- Stop the music when exiting
         love.event.quit() -- Close the game
     end
 end
