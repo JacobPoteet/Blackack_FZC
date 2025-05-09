@@ -14,6 +14,9 @@ function menu.load()
     menu.font = love.graphics.newFont(50) -- Increase font size
     love.graphics.setFont(menu.font)
 
+    -- Load the background image
+    menu.background = love.graphics.newImage("assets/greenfabric.png") -- Replace with the correct path to greenfabric.png
+
     -- Define specific colors for chips
     local predefinedColors = {
         {0.608, 0.224, 0.231}, -- Red
@@ -156,11 +159,16 @@ function menu.update(dt)
 end
 
 function menu.draw()
-    -- Set the background color
-    love.graphics.clear(0.149, 0.302, 0.145) -- Example: Dark green background
+    -- Draw the background image
+    love.graphics.setColor(1, 1, 1, 1) -- Reset color to white to ensure the image is drawn correctly
+    love.graphics.draw(menu.background, 0, 0) -- Draw the background image at the top-left corner
 
     -- Draw all chips
     for _, chip in ipairs(chips) do
+        -- Draw the drop shadow
+        love.graphics.setColor(0, 0, 0, 0.5) -- Semi-transparent black for the shadow
+        love.graphics.draw(chip.image, chip.x + 2, chip.y + 2, 0, 0.2, 0.2) -- Offset the shadow slightly
+
         -- Draw the base chip with its color
         love.graphics.setColor(chip.color[1], chip.color[2], chip.color[3], 1) -- Apply the chip's color
         love.graphics.draw(chip.image, chip.x, chip.y, 0, 0.2, 0.2) -- Scale the chip to 20% of its original size
