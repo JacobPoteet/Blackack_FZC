@@ -24,11 +24,15 @@ function menu.load()
         {0, 1, 1}  -- Cyan
     }
 
-    -- Load the chip image and spawn multiple chips
-    local chipImage = love.graphics.newImage("assets/chip.png") -- Adjust the path as needed
+    -- Load the chip images
+    local chipImage = love.graphics.newImage("assets/chip.png") -- Base chip image
+    local chipAlphaImage = love.graphics.newImage("assets/chipalpha.png") -- Alpha mask image
+
+    -- Spawn multiple chips
     for i = 1, numChips do
         local chip = {
-            image = chipImage,
+            baseImage = chipImage, -- Base chip image
+            alphaImage = chipAlphaImage, -- Alpha mask image
             x = math.random(100, 700), -- Random initial x position
             y = math.random(100, 500), -- Random initial y position
             width = chipImage:getWidth() * 0.2, -- Scale the width
@@ -153,12 +157,17 @@ end
 
 function menu.draw()
     -- Set the background color
-    love.graphics.clear(0.149, 0.302, 0.145) -- Example: Dark blue background (RGB values between 0 and 1)
+    love.graphics.clear(0.149, 0.302, 0.145) -- Example: Dark green background (RGB values between 0 and 1)
 
-    -- Draw all chips first
+    -- Draw all chips
     for _, chip in ipairs(chips) do
-        love.graphics.setColor(chip.color) -- Set the chip's random color
-        love.graphics.draw(chip.image, chip.x, chip.y, 0, 0.2, 0.2) -- Scale the chip to 20% of its original size
+        -- Draw the base chip image (white base)
+        love.graphics.setColor(1, 1, 1) -- White color
+        love.graphics.draw(chip.baseImage, chip.x, chip.y, 0, 0.2, 0.2) -- Scale the chip to 20% of its original size
+
+        -- Draw the alpha mask with the chip's color
+        love.graphics.setColor(chip.color[1], chip.color[2], chip.color[3], 1) -- Apply the chip's color
+        love.graphics.draw(chip.alphaImage, chip.x, chip.y, 0, 0.2, 0.2) -- Scale the alpha mask to match the chip
     end
 
     -- Draw menu options on top of everything else
