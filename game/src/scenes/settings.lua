@@ -41,7 +41,7 @@ function settings.draw()
 
         -- Draw the volume adjustment for the "Volume" option
         if i == 1 then
-            local minusX = x + textWidth + 20 -- Position "-" to the right of "Volume"
+            local minusX = x + textWidth + 50 -- Position "-" to the right of "Volume"
             local plusX = minusX + 100 -- Position "+" to the right of "-"
             local plusMinusY = y -- Align "-" and "+" with the "Volume" text
 

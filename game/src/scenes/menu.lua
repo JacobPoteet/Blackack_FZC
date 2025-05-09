@@ -17,11 +17,6 @@ function menu.load()
     -- Load the background image
     menu.background = love.graphics.newImage("assets/greenfabric.png") -- Replace with the correct path to greenfabric.png
 
-    -- Load the background music
-    menu.music = love.audio.newSource("assets/BLgamemenumusic.wav", "stream") -- Replace with the correct path to BLgamemenumusic
-    menu.music:setLooping(true) -- Loop the music
-    menu.music:play() -- Start playing the music
-
     -- Define specific colors for chips
     local predefinedColors = {
         {0.608, 0.224, 0.231}, -- Red
@@ -36,20 +31,24 @@ function menu.load()
     local chipImage = love.graphics.newImage("assets/chip.png") -- Base chip image
     local symbolsImage = love.graphics.newImage("assets/whitesymbols.png") -- White symbols image
 
-    -- Spawn multiple chips
-    for i = 1, numChips do
-        local chip = {
-            image = chipImage, -- Use the base chip image
-            symbols = symbolsImage, -- White symbols image
-            x = math.random(100, 700), -- Random initial x position
-            y = math.random(100, 500), -- Random initial y position
-            width = chipImage:getWidth() * 0.2, -- Scale the width
-            height = chipImage:getHeight() * 0.2, -- Scale the height
-            dx = math.random(-100, 100), -- Random horizontal velocity
-            dy = math.random(-100, 100), -- Random vertical velocity
-            color = predefinedColors[(i - 1) % #predefinedColors + 1] -- Assign colors in a round-robin manner
-        }
-        table.insert(chips, chip)
+    -- Only spawn chips if the `chips` table is empty
+    if #chips == 0 then
+        local screenWidth, screenHeight = love.graphics.getDimensions()
+
+        for i = 1, numChips do
+            local chip = {
+                image = chipImage, -- Use the base chip image
+                symbols = symbolsImage, -- White symbols image
+                x = math.random(50, screenWidth - 50), -- Random initial x position with padding
+                y = math.random(50, screenHeight - 50), -- Random initial y position with padding
+                width = chipImage:getWidth() * 0.2, -- Scale the width
+                height = chipImage:getHeight() * 0.2, -- Scale the height
+                dx = math.random(-100, 100), -- Random horizontal velocity
+                dy = math.random(-100, 100), -- Random vertical velocity
+                color = predefinedColors[(i - 1) % #predefinedColors + 1] -- Assign colors in a round-robin manner
+            }
+            table.insert(chips, chip)
+        end
     end
 
     -- Initialize the last mouse position
