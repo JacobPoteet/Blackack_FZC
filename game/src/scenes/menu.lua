@@ -193,12 +193,28 @@ function menu.draw()
         local x = (screenWidth - textWidth) / 2 -- Center horizontally
         local y = startY + (i - 1) * (textHeight + 20) -- Add spacing between options
 
-        if i == selectedIndex then
+        -- Check if the mouse is hovering over the option
+        local mouseX, mouseY = love.mouse.getPosition()
+        local isHovered = mouseX >= x and mouseX <= x + textWidth and mouseY >= y and mouseY <= y + textHeight
+
+        -- Apply hover effects
+        if isHovered then
             love.graphics.setColor(1, 1, 0) -- Highlight the selected option
+            love.graphics.setFont(love.graphics.newFont(60)) -- Increase font size for hover effect
         else
             love.graphics.setColor(1, 1, 1) -- Default color
+            love.graphics.setFont(menu.font) -- Reset to default font size
         end
 
+        -- Draw black outline for the text
+        love.graphics.setColor(0, 0, 0) -- Black color for the outline
+        love.graphics.print(option, x - 3, y) -- Left outline
+        love.graphics.print(option, x + 3, y) -- Right outline
+        love.graphics.print(option, x, y - 3) -- Top outline
+        love.graphics.print(option, x, y + 3) -- Bottom outline
+
+        -- Draw the actual text on top of the outline
+        love.graphics.setColor(1, 1, 1) -- White color for the text
         love.graphics.print(option, x, y)
     end
 end
