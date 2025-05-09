@@ -16,23 +16,19 @@ function menu.load()
 
     -- Define specific colors for chips
     local predefinedColors = {
-        {1, 0, 0}, -- Red
-        {0, 1, 0}, -- Green
-        {0, 0, 1}, -- Blue
-        {1, 1, 0}, -- Yellow
-        {1, 0, 1}, -- Magenta
-        {0, 1, 1}  -- Cyan
+        {0.608, 0.224, 0.231}, -- Red
+        {0.11, 0.463, 0.294}, -- Green
+        {0.188, 0.231, 0.486}, -- Blue
+        {0.835, 0.706, 0.267}, -- Yellow
+        {0.969, 0.969, 0.969}, -- White
+        {0.035, 0.047, 0.063}  -- Black
     }
 
-    -- Load the chip images
-    local chipImage = love.graphics.newImage("assets/chip.png") -- Base chip image
-    local chipAlphaImage = love.graphics.newImage("assets/chipalpha.png") -- Alpha mask image
-
-    -- Spawn multiple chips
+    -- Load the chip image and spawn multiple chips
+    local chipImage = love.graphics.newImage("assets/chip.png") -- Adjust the path as needed
     for i = 1, numChips do
         local chip = {
-            baseImage = chipImage, -- Base chip image
-            alphaImage = chipAlphaImage, -- Alpha mask image
+            image = chipImage,
             x = math.random(100, 700), -- Random initial x position
             y = math.random(100, 500), -- Random initial y position
             width = chipImage:getWidth() * 0.2, -- Scale the width
@@ -157,18 +153,12 @@ end
 
 function menu.draw()
     -- Set the background color
-    love.graphics.clear(0.149, 0.302, 0.145) -- Example: Dark green background
+    love.graphics.clear(0.149, 0.302, 0.145) -- Example: Dark blue background (RGB values between 0 and 1)
 
-    -- Draw all chips
+    -- Draw all chips first
     for _, chip in ipairs(chips) do
-        -- Draw the base chip image (white base)
-        love.graphics.setColor(1, 1, 1) -- White color
-        love.graphics.draw(chip.baseImage, chip.x, chip.y, 0, 0.2, 0.2)
-
-        -- Draw the alpha mask with the chip's color
-        love.graphics.setBlendMode("alpha") -- Use default alpha blending
-        love.graphics.setColor(chip.color[1], chip.color[2], chip.color[3], 1) -- Apply the chip's color
-        love.graphics.draw(chip.alphaImage, chip.x, chip.y, 0, 0.2, 0.2)
+        love.graphics.setColor(chip.color) -- Set the chip's random color
+        love.graphics.draw(chip.image, chip.x, chip.y, 0, 0.2, 0.2) -- Scale the chip to 20% of its original size
     end
 
     -- Draw menu options on top of everything else
@@ -224,7 +214,7 @@ function menu.selectOption(index)
         SwitchScene(require(constants.SCENES.PLAY))
     elseif index == 2 then
         SwitchScene(require(constants.SCENES.SETTINGS))
-    elseif index == 2 then
+    elseif index == 3 then
         SwitchScene(require(constants.SCENES.EXIT))
     end
 end
